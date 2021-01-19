@@ -4,6 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const knex = require('knex');
 
+
 // const db = knex({
 //   client: 'pg',
 //   connection: {
@@ -46,24 +47,36 @@ const database ={
   ]
 }
 
+// app.all('/', function(req, res, next) {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
+//   next()
+// });
+
 app.get('/', (req, res) => {
   res.send(database.users);
 })
 
 app.post('/signin', (req, res) => {
-  if (req.body.email === database.users[0].email &&
-    req.body.password === database.users[0].password){
-      res.json('success');
+  if (
+      req.body.email === database.users[0].email &&
+      req.body.password === database.users[0].password){
+        res.json('success');
   } else {
     res.status(400).json('error logging in');
   }
 })
 
-app.post('/register', (req, res) => {
+app.post('/signup', (req, res) => {
   const {email, name, password} =req.body;
   database.users.push({
-    id
+    id: '126',
+    name: name,
+    email: email,
+    password: password,
+    joined: new Date()
   })
+  res.json(database.users[database.users.length-1]);
 })
 
 app.listen(5000, () => {

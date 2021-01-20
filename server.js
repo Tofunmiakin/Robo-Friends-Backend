@@ -47,17 +47,30 @@ const database ={
   ]
 }
 
+const corsOptions = {
+  origin: 'http://localhost:5000',
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+
 // app.all('/', function(req, res, next) {
 //   res.header("Access-Control-Allow-Origin", "*");
 //   res.header("Access-Control-Allow-Headers", "X-Requested-With");
 //   next()
 // });
 
+// app.use(
+//   cors({
+//     origin: "http://localhost:5000",
+//     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//     credentials: true
+//   })
+// )
+
 app.get('/', (req, res) => {
   res.send(database.users);
 })
 
-app.post('/signin', (req, res) => {
+app.post('/signin', cors(), (req, res) => {
   if (
       req.body.email === database.users[0].email &&
       req.body.password === database.users[0].password){

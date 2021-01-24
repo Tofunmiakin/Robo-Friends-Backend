@@ -4,6 +4,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const knex = require('knex');
 
+const signup = require('./controllers/signup');
+const signin = require('./controllers/signin');
 
 const db = knex({
   client: 'pg',
@@ -16,106 +18,20 @@ const db = knex({
 });
 
 const app = express();
+
 app.use(bodyParser.json());
 app.use(cors());
 
-const database ={
-  users : [
-    {
-      id: '123',
-      name: 'John',
-      email: 'john@gmail.com',
-      password: 'cookies',
-      joined: new Date()
-    },
-
-    {
-      id: '124',
-      name: 'Hue',
-      email: 'hue@gmail.com',
-      password: 'eggs',
-      joined: new Date()
-    },
-
-    {
-      id: '125',
-      name: 'Bog',
-      email: 'bog@gmail.com',
-      password: 'plants',
-      joined: new Date()
-    }
-  ]
-}
-
-// const corsOptions = {
-//   origin: 'http://localhost:5000',
-//   optionsSuccessStatus: 200
-// }
-
-// app.all('/', function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "X-Requested-With");
-//   next()
-// });
-
-// app.use(
-//   cors({
-//     origin: "http://localhost:5000",
-//     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-//     credentials: true
-//   })
-// )
-
 app.get('/', (req, res) => {
-  res.send(database.users);
+  db.select('*').from('users')
+    .then(all => {
+      res.json(all)
+    })
 })
 
-app.post('/signin',  (req, res) => {
-  db.select('email', 'hash').from('login')
-    .where('email', '=', req.body.email)
-    .then(data => {
-      const isValid = bcrypt.compareSync(req.body.password, data[0].hash);
-      if (isValid){
-        return db.select('*').from('users')
-          .where('email', '=', req.body.email)
-          .then(user =>{
-            res.json(user[0])
-          })
-          .catch(err => res.status(400).json('unable to get user'))
-      } else{
-        res.status(400).json('wrong credentials')
-      }
-    })
-    .catch(err => res.status(400).json('wrong credentials'))
-})
+app.post('/signin', (req, res) => {signin.handleSignin(req, res, db, bcrypt)})
 
-app.post('/signup', (req, res) => {
-  const {email, name, password} =req.body;
-  const hash = bcrypt.hashSync(password, 10);
-    db.transaction(trx => {
-      trx.insert({
-        hash: hash,
-        email: email
-      })
-      .into('login')
-      .returning('email')
-      .then(loginEmail => {
-        return trx('users')
-          .returning('*')
-          .insert({
-            email: loginEmail[0],
-            name: name,
-            joined: new Date()
-          })
-          .then(user => {
-            res.json(user[0]);
-          })
-      })
-      .then(trx.commit)
-      .catch(trx.rollback)
-    })
-  .catch(err => res.status(400).json('unable to register'))
-})
+app.post('/signup', (req, res) => {signup.handleSignup(req, res, db, bcrypt)})
 
 app.listen(5000, () => {
   console.log('app is running on port 5000');

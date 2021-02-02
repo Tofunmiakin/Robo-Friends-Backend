@@ -5,7 +5,6 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon server.js"
-
   },
   "repository": {
     "type": "git",
@@ -32,9 +31,5 @@
   "engines": {
     "node": "0.10.x",
     "npm": "2.1.x"
-  },
-  "resolutions": {
-    "graceful-fs": "^4.2.4"
   }
 }
-

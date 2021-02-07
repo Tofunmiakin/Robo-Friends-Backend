@@ -23,11 +23,11 @@ app.use(bodyParser.json());
 app.use(cors());
 
 app.get('/', (req, res) => {
-  db.select('*').from('users')
-    .then(all => {
-      res.status(200).json(all)
-    })
-  // res.status(200).json('e dey work')
+  // db.select('*').from('users')
+  //   .then(all => {
+  //     res.status(200).json(all)
+  //   })
+  res.status(200).json('e dey work')
 })
 // app.get('/', (req, res)=> { res.json(db.users) })
 

@@ -1,6 +1,5 @@
 // requests user details from the front end and posts them into the database
 // stores the password as hash with bcrypt  
-process.unhandledRejections = 'strict';
 
 const handleSignup = (req, res, db, bcrypt) => {
   const {email, name, password} =req.body;
@@ -26,6 +25,7 @@ const handleSignup = (req, res, db, bcrypt) => {
           .then(user => {
             res.json(user[0]);
           })
+          .catch(err => res.status(400).json('idek mehn'))
       })
       .then(trx.commit)
       .catch(trx.rollback)

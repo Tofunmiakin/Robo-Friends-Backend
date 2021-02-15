@@ -7,7 +7,8 @@ const knex = require('knex');
 const signup = require('./controllers/signup');
 const signin = require('./controllers/signin');
 
-ODE_TLS_REJECT_UNAUTHORIZED='0';
+// ODE_TLS_REJECT_UNAUTHORIZED='0';
+process.unhandledRejections = 'strict';
 
 const db = knex({
   client: 'pg',

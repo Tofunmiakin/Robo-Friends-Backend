@@ -1,6 +1,5 @@
 // requests user details from the front end and posts them into the database
 // stores the password as hash with bcrypt  
-ODE_TLS_REJECT_UNAUTHORIZED='0';
 
 const handleSignup = (req, res, db, bcrypt) => {
   const {email, name, password} =req.body;

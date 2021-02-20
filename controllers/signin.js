@@ -1,6 +1,8 @@
 // selects a user from the database that matches the information sent from the front end
 // compares the passwords that have been hashed on registration
 
+NODE_TLS_REJECT_UNAUTHORIZED='0';
+
 const handleSignin = (req, res, db, bcrypt) => {
   const {email, password} =req.body;
   if (!email || !password){
